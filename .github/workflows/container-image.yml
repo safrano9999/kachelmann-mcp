@@ -45,6 +45,7 @@ jobs:
           ref: ${{ env.KACHELMANN_REVISION }}
           path: source
           persist-credentials: false
+          token: ${{ secrets.KACHELMANN_REPO_TOKEN }}
 
       - name: Resolve image tags
         id: tags

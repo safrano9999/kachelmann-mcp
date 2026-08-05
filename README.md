@@ -29,8 +29,8 @@ KACHELMANN_MCP_PORT=11041
 KACHELMANN_MCP_ALLOWED_HOSTS=kachelmann-mcp:*
 ```
 
-Generate the purpose-bound MCP bearer without displaying the editor token:
+Use the same value as the MCP Bearer credential:
 
 ```sh
-podman exec kachelmann-mcp python -m kachelmann.mcp_server --print-http-token
+export MCP_BEARER_TOKEN="$KACHELMANN_EDITOR_TOKEN"
 ```

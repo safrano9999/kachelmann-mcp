@@ -40,7 +40,7 @@ jobs:
     env:
       IMAGE_NAME: ghcr.io/safrano9999/kachelmann-mcp
       KACHELMANN_REPOSITORY: safrano9999/KACHELMANN
-      KACHELMANN_REVISION: 9fdca786350ac752999293c3f668732c1348938d
+      KACHELMANN_REVISION: e400b1b7b06547688d60b8980f9b23bf969811fd
       DOCKER_BUILD_RECORD_UPLOAD: "false"
     steps:
       - name: Check out container repository
@@ -124,7 +124,7 @@ jobs:
             -e KACHELMANN_DB_BACKEND=sqlite \
             -e KACHELMANN_EDITOR_TOKEN=ci-editor-token \
             -e KACHELMANN_MCP_ENABLED=true \
-            -e KACHELMANN_MCP_PORT=11041 \
+            -e KACHELMANN_MCP_PORT=8005 \
             "$image")"
           cleanup() {
             docker container rm --force "$container_id" >/dev/null 2>&1 || true
@@ -136,7 +136,7 @@ jobs:
               exit 1
             fi
             if docker exec "$container_id" python -c \
-              'from urllib.request import urlopen; urlopen("http://127.0.0.1:11041/", timeout=2).read()'; then
+              'from urllib.request import urlopen; urlopen("http://127.0.0.1:8005/", timeout=2).read()'; then
               exit 0
             fi
             sleep 1

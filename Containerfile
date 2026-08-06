@@ -10,7 +10,7 @@ LABEL org.opencontainers.image.title="KACHELMANN MCP" \
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     KACHELMANN_MCP_ENABLED=true \
-    KACHELMANN_MCP_PORT=11041
+    KACHELMANN_MCP_PORT=8005
 
 WORKDIR /opt/kachelmann
 
@@ -53,10 +53,10 @@ RUN set -eux; \
 
 USER 10001:10001
 
-EXPOSE 11041
+EXPOSE 8005
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD python -c 'from urllib.request import urlopen; urlopen("http://127.0.0.1:11041/", timeout=3).read()'
+  CMD python -c 'import os; from urllib.request import urlopen; port = os.environ.get("KACHELMANN_MCP_PORT", "8005"); urlopen(f"http://127.0.0.1:{port}/", timeout=3).read()'
 
 ENTRYPOINT ["python", "-m", "kachelmann.mcp_server"]
 CMD ["--transport", "streamable-http"]

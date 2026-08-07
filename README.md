@@ -26,6 +26,7 @@ KACHELMANN_DB_USER=kachelmann
 KACHELMANN_DB_PW=change-me
 KACHELMANN_EDITOR_TOKEN=change-me
 KACHELMANN_MCP_ENABLED=true
+KACHELMANN_MCP_HOST=0.0.0.0
 KACHELMANN_MCP_PORT=8005
 KACHELMANN_MCP_ALLOWED_HOSTS=kachelmann-mcp:*
 ```
@@ -35,3 +36,8 @@ Use the same value as the MCP Bearer credential:
 ```sh
 export MCP_BEARER_TOKEN="$KACHELMANN_EDITOR_TOKEN"
 ```
+
+Run `./setup.sh` to create or update an instance below `CONTAINER/<name>`.
+The shared setup logic offers TUN, manual publishing, or port ranges 2-5 and
+renders both Compose and Quadlet files. The internal bind host/port and the
+external publish host/port remain independently configurable.

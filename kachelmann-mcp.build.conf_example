@@ -1,0 +1,2 @@
+#default-preset: ghcr.io/safrano9999/kachelmann-mcp:latest
+KACHELMANN_MCP_IMAGE=ghcr.io/safrano9999/kachelmann-mcp:latest

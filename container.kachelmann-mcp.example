@@ -1,0 +1,10 @@
+#default-preset: TUN
+CONTAINER_NR=TUN
+
+#default-preset: 127.0.0.1
+#required: Host address for the published MCP port
+KACHELMANN_MCP_PUBLISH_HOST=127.0.0.1
+
+#default-preset: 8005
+#required: Published MCP port; CONTAINER_NR projects this into the selected range
+KACHELMANN_MCP_PUBLISH_PORT=8005

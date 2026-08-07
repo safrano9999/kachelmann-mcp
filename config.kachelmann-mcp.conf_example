@@ -1,0 +1,19 @@
+#CONTAINER-NAME
+#default-preset: kachelmann-mcp
+#required: Container name
+CONTAINER_NAME=kachelmann-mcp
+
+#container-command: image
+
+#default-preset: true
+#choices: false true
+#required: Enable the Streamable HTTP MCP listener
+KACHELMANN_MCP_ENABLED=true
+
+#default-preset: 0.0.0.0
+#required: Container-internal MCP bind host
+KACHELMANN_MCP_HOST=0.0.0.0
+
+#default-preset: 8005
+#required: Container-internal MCP port
+KACHELMANN_MCP_PORT=8005

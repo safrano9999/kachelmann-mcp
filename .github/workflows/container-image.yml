@@ -40,7 +40,7 @@ jobs:
     env:
       IMAGE_NAME: ghcr.io/safrano9999/kachelmann-mcp
       KACHELMANN_REPOSITORY: safrano9999/KACHELMANN
-      KACHELMANN_REVISION: e400b1b7b06547688d60b8980f9b23bf969811fd
+      KACHELMANN_REVISION: c612f483eccab2e032cbaa290bb4ddf7b8c8c082
       DOCKER_BUILD_RECORD_UPLOAD: "false"
     steps:
       - name: Check out container repository

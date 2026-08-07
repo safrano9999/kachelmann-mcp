@@ -40,7 +40,7 @@ jobs:
     env:
       IMAGE_NAME: ghcr.io/safrano9999/kachelmann-mcp
       KACHELMANN_REPOSITORY: safrano9999/KACHELMANN
-      KACHELMANN_REVISION: c612f483eccab2e032cbaa290bb4ddf7b8c8c082
+      KACHELMANN_REF: main
       DOCKER_BUILD_RECORD_UPLOAD: "false"
     steps:
       - name: Check out container repository
@@ -53,10 +53,15 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: ${{ env.KACHELMANN_REPOSITORY }}
-          ref: ${{ env.KACHELMANN_REVISION }}
+          ref: ${{ env.KACHELMANN_REF }}
           path: source
           persist-credentials: false
           token: ${{ secrets.KACHELMANN_REPO_TOKEN }}
+
+      - name: Resolve KACHELMANN source revision
+        id: source
+        shell: bash
+        run: echo "revision=$(git -C source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Resolve image tags
         id: tags
@@ -98,7 +103,7 @@ jobs:
           context: ./source
           file: ./container/Containerfile
           build-args: |
-            KACHELMANN_SOURCE_REVISION=${{ env.KACHELMANN_REVISION }}
+            KACHELMANN_SOURCE_REVISION=${{ steps.source.outputs.revision }}
           platforms: linux/amd64
           pull: true
           no-cache: true

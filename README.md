@@ -11,9 +11,10 @@ The published image is:
 ghcr.io/safrano9999/kachelmann-mcp
 ```
 
-The build checks out the immutable KACHELMANN source revision recorded in the
-GitHub Actions workflow. The runtime endpoint is `/mcp`; its default port is
-`8005` and `KACHELMANN_MCP_PORT` overrides it at runtime.
+Each build checks out the current KACHELMANN `main` branch, matching the latest
+ZIP/APK source line. The resolved commit is recorded in the image metadata for
+traceability without pinning future builds. The runtime endpoint is `/mcp`;
+its default port is `8005` and `KACHELMANN_MCP_PORT` overrides it at runtime.
 
 Required runtime settings:
 

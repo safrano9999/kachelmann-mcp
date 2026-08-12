@@ -40,7 +40,7 @@ RUN set -eux; \
     apk del .build-deps; \
     python -m pip check
 
-COPY python_header.py config.json KACHELMANN_SOT.md prompt.md ./
+COPY python_header.py config.json KACHELMANN_SOT.md prompt.md package.json ./
 COPY kachelmann ./kachelmann
 COPY COACHING_ADVISES ./COACHING_ADVISES
 COPY static/favicon.svg ./static/favicon.svg

@@ -25,12 +25,33 @@ KACHELMANN_DB_PORT=5432
 KACHELMANN_DB_NAME=kachelmann
 KACHELMANN_DB_USER=kachelmann
 KACHELMANN_DB_PW=change-me
+KACHELMANN_CONTENT_PATH=/var/lib/kachelmann/content
+KACHELMANN_CONTENT_GID=10001
 KACHELMANN_EDITOR_TOKEN=change-me
 KACHELMANN_MCP_ENABLED=true
 KACHELMANN_MCP_HOST=0.0.0.0
 KACHELMANN_MCP_PORT=8005
 KACHELMANN_MCP_ALLOWED_HOSTS=kachelmann-mcp:*
 ```
+
+The sidecar and its matching Fedora container must mount the same named volume
+at `/var/lib/kachelmann:z`. Set `KACHELMANN_CONTENT_VOLUME` to the Fedora
+instance's exact volume name; do not derive it from the sidecar name. The
+current instance mappings are:
+
+```env
+# SSH-1
+KACHELMANN_CONTENT_VOLUME=fedora44-ai-ssh-1-kachelmann
+KACHELMANN_CONTENT_VOLUMES=${KACHELMANN_CONTENT_VOLUME}:/var/lib/kachelmann:z
+
+# uCore
+KACHELMANN_CONTENT_VOLUME=fedora44-ai-safrano9999-ucore-kachelmann
+KACHELMANN_CONTENT_VOLUMES=${KACHELMANN_CONTENT_VOLUME}:/var/lib/kachelmann:z
+```
+
+Start Fedora once before a new sidecar so its root process can initialize the
+shared directory with group 10001 and modes 2770/0660. The sidecar runs as
+UID/GID 10001 and then writes through those group permissions.
 
 Use the same value as the MCP Bearer credential:
 

@@ -8,3 +8,10 @@ KACHELMANN_MCP_PUBLISH_HOST=127.0.0.1
 #default-preset: 8005
 #required: Published MCP port; CONTAINER_NR projects this into the selected range
 KACHELMANN_MCP_PUBLISH_PORT=8005
+
+#required: Exact named volume used by the matching Fedora container
+KACHELMANN_CONTENT_VOLUME=
+
+#default-preset: ${KACHELMANN_CONTENT_VOLUME}:/var/lib/kachelmann:z
+#required: Shared KACHELMANN content mount; keep the SELinux shared label
+KACHELMANN_CONTENT_VOLUMES=${KACHELMANN_CONTENT_VOLUME}:/var/lib/kachelmann:z

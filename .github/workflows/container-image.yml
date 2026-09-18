@@ -5,6 +5,10 @@ run-name: ${{ inputs.monitor_id != '' && format('{0} [monitor:{1}:{2}]', github.
 on:
   workflow_dispatch:
     inputs:
+      source_ref:
+        description: Exact prepared KACHELMANN source commit
+        type: string
+        default: main
       image_tag:
         description: "Image tag to publish. Empty uses YYYY.M.D."
         required: false
@@ -40,7 +44,7 @@ jobs:
     env:
       IMAGE_NAME: ghcr.io/safrano9999/kachelmann-mcp
       KACHELMANN_REPOSITORY: safrano9999/KACHELMANN
-      KACHELMANN_REF: main
+      KACHELMANN_REF: 5ce99ab9ac9fea2ee70c56ba1a75ca3e5ae01ec2
       DOCKER_BUILD_RECORD_UPLOAD: "false"
     steps:
       - name: Check out container repository
@@ -101,7 +105,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./source
-          file: ./container/Containerfile
+          file: ./container/.github/scripts/Containerfile
           build-args: |
             KACHELMANN_SOURCE_REVISION=${{ steps.source.outputs.revision }}
           platforms: linux/amd64
@@ -109,6 +113,10 @@ jobs:
           no-cache: true
           push: true
           tags: ${{ steps.tags.outputs.tags }}
+          labels: |
+            io.safrano9999.build.commit=${{ github.sha }}
+            io.safrano9999.build.source=d048ce64e00a69f311d2c492bc64495df6969e2e
+            io.safrano9999.build.inputs=a8e7c17ecb9b0e8349ab912a13930a9210c41338933a283989171695a3447db0
 
       - name: Smoke-test published image
         env:

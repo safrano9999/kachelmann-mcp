@@ -115,6 +115,8 @@ jobs:
           tags: ${{ steps.tags.outputs.tags }}
           labels: |
             io.safrano9999.build.commit=${{ github.sha }}
+            io.safrano9999.build.source=430f75eab2b6e48bf2e0eff412890a997587401e
+            io.safrano9999.build.inputs=1a5afa491e63a22e8453254ed875f463edcd28f7d2007af59938f4e9d05cc33c
 
       - name: Smoke-test published image
         env:

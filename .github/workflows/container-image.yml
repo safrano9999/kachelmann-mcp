@@ -59,6 +59,7 @@ jobs:
           ref: ${{ inputs.source_ref }}
           path: source
           persist-credentials: false
+          token: ${{ secrets.KACHELMANN_REPO_TOKEN }}
 
       - name: Resolve KACHELMANN source revision
         id: source

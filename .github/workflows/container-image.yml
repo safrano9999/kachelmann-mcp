@@ -5,6 +5,10 @@ run-name: ${{ inputs.monitor_id != '' && format('{0} [monitor:{1}:{2}]', github.
 on:
   workflow_dispatch:
     inputs:
+      image_tag:
+        description: Optional independent YYYY.M.N image release; empty uses the application version
+        type: string
+        default: ""
       source_ref:
         description: KACHELMANN commit or tag (version is read from its release.json)
         type: string
@@ -57,14 +61,25 @@ jobs:
         shell: bash
         run: echo "revision=$(git -C source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Copy version from KACHELMANN repository
+      - name: Resolve application and image versions
         id: tags
+        env:
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          version="$(jq -er '.version' source/release.json)"
+          app_version="$(jq -er '.version' source/release.json)"
+          version="${IMAGE_TAG:-$app_version}"
+          [[ "$version" =~ ^[0-9]{4}\.([1-9]|1[0-2])\.[1-9][0-9]*$ ]]
+          tags="$(gh api --paginate 'users/safrano9999/packages/container/kachelmann-mcp/versions?per_page=100' --jq '.[].metadata.container.tags[]')"
+          if grep -Fxq "$version" <<< "$tags"; then
+            echo "Refusing to overwrite existing image version: $version" >&2
+            exit 1
+          fi
           {
             echo "version=$version"
+            echo "app_version=$app_version"
             echo "tags<<EOF"
             echo "${IMAGE_NAME}:${version}"
             echo "${IMAGE_NAME}:latest"
@@ -105,6 +120,7 @@ jobs:
       - name: Smoke-test published image
         env:
           IMAGE_TAG: ${{ steps.tags.outputs.version }}
+          APP_VERSION: ${{ steps.tags.outputs.app_version }}
         shell: bash
         run: |
           set -euo pipefail
@@ -117,7 +133,7 @@ jobs:
           docker run --rm --entrypoint python "$image" -c \
             'import psycopg; import sqlalchemy; import kachelmann.mcp_server'
           docker run --rm --entrypoint python "$image" -c \
-            'import sys, kachelmann; assert kachelmann.__version__ == sys.argv[1]' "$IMAGE_TAG"
+            'import sys, kachelmann; assert kachelmann.__version__ == sys.argv[1]' "$APP_VERSION"
 
           container_id="$(docker run -d \
             -e KACHELMANN_DB_BACKEND=sqlite \

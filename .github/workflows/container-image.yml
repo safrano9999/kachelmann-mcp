@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: Optional independent YYYY.M.N image release; empty uses the application version
+        description: Optional fixed YYYY.M.N image release; empty selects the next monthly number
         type: string
         default: ""
       source_ref:
@@ -61,6 +61,9 @@ jobs:
         shell: bash
         run: echo "revision=$(git -C source rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      - name: Test image version allocation
+        run: python3 container/.github/scripts/test-image-version.py
+
       - name: Resolve application and image versions
         id: tags
         env:
@@ -70,9 +73,15 @@ jobs:
         run: |
           set -euo pipefail
           app_version="$(jq -er '.version' source/release.json)"
-          version="${IMAGE_TAG:-$app_version}"
-          [[ "$version" =~ ^[0-9]{4}\.([1-9]|1[0-2])\.[1-9][0-9]*$ ]]
           tags="$(gh api --paginate 'users/safrano9999/packages/container/kachelmann-mcp/versions?per_page=100' --jq '.[].metadata.container.tags[]')"
+          version="$IMAGE_TAG"
+          if [[ -z "$version" ]]; then
+            month="$(date -u +%Y.%-m)"
+            next="$(jq -Rsr --arg prefix "$month." \
+              '[split("\n")[] | select(startswith($prefix)) | ltrimstr($prefix) | select(test("^[1-9][0-9]*$")) | tonumber] | ((max // 0) + 1)' <<< "$tags")"
+            version="$month.$next"
+          fi
+          [[ "$version" =~ ^[0-9]{4}\.([1-9]|1[0-2])\.[1-9][0-9]*$ ]]
           if grep -Fxq "$version" <<< "$tags"; then
             echo "Refusing to overwrite existing image version: $version" >&2
             exit 1

@@ -39,7 +39,11 @@ jobs:
           cp container/.github/scripts/standalone-start source/
           apk="kachelmann-$(jq -er '.version' source/release.json).apk"
           cd source
-          gh release download latest -R safrano9999/KACHELMANN -p "$apk" -p "$apk.sha256"
+          gh api repos/safrano9999/KACHELMANN/releases/tags/latest > "$RUNNER_TEMP/kachelmann-release.json"
+          for asset in "$apk" "$apk.sha256"; do
+            id="$(jq -er --arg name "$asset" '.assets[] | select(.name == $name) | .id' "$RUNNER_TEMP/kachelmann-release.json")"
+            gh api -H 'Accept: application/octet-stream' "repos/safrano9999/KACHELMANN/releases/assets/$id" > "$asset"
+          done
           sha256sum -c "$apk.sha256"
       - name: Allocate next monthly registry tag
         env:

@@ -1,0 +1,22 @@
+#CONTAINER-NAME
+#default-preset: kachelmann
+CONTAINER_NAME=kachelmann
+#container-command: image
+
+#default-preset: KACHELMANN
+KACHELMANN_DISPLAY_NAME=KACHELMANN
+#default-preset: 0.0.0.0
+FASTAPI_HOST=0.0.0.0
+#default-preset: 8080
+KACHELMANN_PORT=8080
+#choices: true false
+#default-preset: true
+KACHELMANN_MCP_ENABLED=true
+#default-preset: 0.0.0.0
+KACHELMANN_MCP_HOST=0.0.0.0
+#default-preset: 8000
+KACHELMANN_MCP_PORT=8000
+#default-preset: 0
+KACHELMANN_MOTIVATION=0
+#default-preset: 1
+KACHELMANN_STATUS_PDF=1
